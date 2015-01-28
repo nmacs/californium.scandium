@@ -165,6 +165,8 @@ public class ClientHello extends HandshakeMessage {
 		this.clientVersion = version;
 		this.random = new Random(secureRandom);
 		this.sessionId = session.getSessionIdentifier();
+		if (this.sessionId == null)
+			this.sessionId = new SessionId(new byte[] {});
 		this.cookie = new Cookie();
 		addCipherSuite(session.getWriteState().getCipherSuite());
 		addCompressionMethod(session.getReadState().getCompressionMethod());

@@ -255,7 +255,7 @@ public class Record {
 	 *             if the decryption fails.
 	 */
 	private byte[] decryptFragment(byte[] byteArray) throws HandshakeException {
-		if (session == null) {
+		if (session == null || epoch == 0) {
 			return byteArray;
 		}
 

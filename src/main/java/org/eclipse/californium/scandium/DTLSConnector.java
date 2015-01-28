@@ -444,9 +444,12 @@ public class DTLSConnector extends ConnectorBase {
 				encryptedMessage = new Record(ContentType.APPLICATION_DATA, session.getWriteEpoch(), session.getSequenceNumber(), fragment, session);
 				
 			} else {
-				// try resuming session
-				handshaker = new ResumingClientHandshaker(peerAddress, message, session, rootCerts, config);
-				handshaker.setMaxFragmentLength(config.getMaxFragmentLength());
+				DTLSFlight previousFlight = flights.get(addressToKey(peerAddress));
+				if (previousFlight == null) {
+					// try resuming session
+					handshaker = new ResumingClientHandshaker(peerAddress, message, session, rootCerts, config);
+					handshaker.setMaxFragmentLength(config.getMaxFragmentLength());
+				}
 			}
 			
 		}
@@ -590,6 +593,7 @@ public class DTLSConnector extends ConnectorBase {
 
 		} else {
 			LOGGER.fine("Maximum retransmissions reached.");
+			close(flight.getPeerAddress());
 		}
 	}
 
